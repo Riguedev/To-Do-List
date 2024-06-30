@@ -1,13 +1,14 @@
 <?php
 
+require __DIR__ . '/../vendor/autoload.php';
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/..');
+$dotenv->load();
+
 class DataBaseConnection {
-    public const DBUSER = "root";
-    public const DBPASS = "";
-    public const DSN = "mysql:host=127.0.0.1;dbname=test";
 
     public static function dbConnection() {
         try {
-            $dataBase = new PDO(self::DSN, self::DBUSER , self::DBPASS);
+            $dataBase = new PDO($_ENV["DSN"], $_ENV["DBUSER"] , $_ENV["DBPASS"]);
             return $dataBase;
         }
         catch(PDOException $error) {
