@@ -1,6 +1,6 @@
 export function updateState(task){
     const taskDOM = document.getElementById(task.id)
-    const URL = "/Task/controllers/updateTaskState.php";
+    const URL = "../controllers/updateTaskState.php";
     let id = task.id;
     let state = taskDOM.classList[1];
     let taskState;
@@ -41,7 +41,7 @@ export function updateState(task){
 
 export function createTask() {
     const taskInput = document.getElementById("add_task_text");
-    fetch("/Task/controllers/createTask.php", {
+    fetch("../controllers/createTask.php", {
         method: "POST",
         headers: {
             'Content-Type': 'application/json'
@@ -59,6 +59,33 @@ export function createTask() {
     .catch(error => {
         console.log(error)
     })
+}
+
+export function deleteTask(id) {
+    if(confirm("Seguro que quieres borrar esta tarea")) {
+        fetch("../controllers/deleteTask.php", {
+            method: "DELETE",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                task_id: id
+            })
+        })
+    
+        .then(response => response.json())
+        .then(data => {
+            if(data.success) {
+                const task = document.getElementById(data.task_id);
+                const taskParent = task.parentNode;
+                taskParent.style.display = "none";
+    
+                alert(data.message);
+            } else {
+                alert(data.message);
+            }
+        })
+    }
 }
 
 export function logOut() {

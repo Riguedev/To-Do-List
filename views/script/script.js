@@ -1,6 +1,7 @@
 import { updateState } from "./taskFunctions.js";
 import { logOut } from "./taskFunctions.js";
 import { createTask } from "./taskFunctions.js";
+import { deleteTask } from "./taskFunctions.js";
 import { displayCreateTaskForm } from "./functionsDOM.js";
 
 const addTask = document.getElementById("add");
@@ -34,5 +35,5 @@ Array.from(tasks).forEach((task) => {
 
 Array.from(icons).forEach((icon) => {{
     const siblingTask = icon.previousElementSibling
-    icon.addEventListener("click", () => {console.log(siblingTask)})
+    icon.addEventListener("click", () => {deleteTask(siblingTask.id)})
 }})

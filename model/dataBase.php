@@ -8,7 +8,8 @@ class DataBaseConnection {
 
     public static function dbConnection() {
         try {
-            $dataBase = new PDO($_ENV["DSN"], $_ENV["DBUSER"] , $_ENV["DBPASS"]);
+            $dsn = "mysql:host={$_ENV['DB_HOST']};port={$_ENV['DB_PORT']};dbname={$_ENV['DB_NAME']}";
+            $dataBase = new PDO($dsn, $_ENV["DB_USER"] , $_ENV["DB_PASS"]);
             return $dataBase;
         }
         catch(PDOException $error) {
@@ -73,13 +74,11 @@ class DataBaseConnection {
             
             $lastInsertId = $dbConnection->lastInsertId();
 
-            // Selecciona el registro insertado usando el ID
             $sql = "SELECT * FROM Tasks WHERE task_id = :task_id";
             $stmt = $dbConnection->prepare($sql);
             $stmt->bindParam(":task_id", $lastInsertId);
             $stmt->execute();
 
-            // Obtiene los datos del registro
             $newTask = $stmt->fetch(PDO::FETCH_ASSOC);
 
             return $newTask;
@@ -109,6 +108,24 @@ class DataBaseConnection {
                 return $response[0];
             }
         } catch(PDOException $e) {
+            echo $e;
+        }
+    }
+
+    public static function deleteTask($taskId, $creatorId) {
+        $dbConnection = DataBaseConnection::dbConnection();
+
+        try {
+            $sql = "DELETE FROM Tasks WHERE task_id = :task_id AND creator_id = :creator_id";
+            $stmt = $dbConnection->prepare($sql);
+            $stmt->bindParam(":task_id", $taskId);
+            $stmt->bindParam(":creator_id", $creatorId);
+            if($stmt->execute()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
             echo $e;
         }
     }
